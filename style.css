@@ -30,7 +30,7 @@ body{
     padding:16px
 }
 @media (max-width:720px){
-	.app{margin:0;padding:0;padding-top:80px;padding-bottom:42vh}
+	.app{margin:0;padding:0}
 }
 
 .header{
@@ -106,7 +106,8 @@ button[disabled]{opacity:0.5;cursor:not-allowed}
 	.controls-panel{background:var(--card);padding:12px;margin:12px;border-radius:14px;box-shadow:var(--shadow);border:1px solid #f0ebe5;display:block}
 	.controls-panel.closed{display:none}
 	.controls-toggle{display:block;position:fixed;right:18px;top:18px;background:var(--accent);color:white;border-radius:50%;width:48px;height:48px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;z-index:70;font-size:18px;border:none;cursor:pointer;padding:0}
-	#map{flex-shrink:0;height:40vh;width:100%;margin:0;border-radius:0;z-index:50}
+	.map-container{flex-shrink:0;background:var(--card);box-shadow:var(--shadow);padding:0;border-radius:0;border:0;margin:0;height:40vh;z-index:50}
+	#map{width:100%;height:100%;border-radius:0;border:none;box-shadow:none;margin:0;padding:0}
 }
 
 /* Route toggle button (mobile) */
@@ -124,6 +125,7 @@ button[disabled]{opacity:0.5;cursor:not-allowed}
 .legend-popup.hidden{display:none}
 .legend{cursor:pointer}
 #map{width:100%;height:60vh;border-radius:14px;overflow:hidden;border:1px solid #f0ebe5;box-shadow:var(--shadow)}
+.map-container{margin-top:12px;background:var(--card);box-shadow:var(--shadow);padding:0;border-radius:14px;border:1px solid #f0ebe5}
 @media (max-width:720px){
 	#map{border-radius:0;border:none;box-shadow:none}
 }

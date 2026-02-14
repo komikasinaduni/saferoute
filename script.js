@@ -1,6 +1,7 @@
 let map, routeLayer, startMarker, endMarker, crimeHeat, crimeMarkers = [], crimePoints = [], lastRoute = null;
-let routeVisible = false;
+let routeVisible = true;
 let routeToggleBtn = null;
+const isMobile = window.matchMedia('(max-width:720px)').matches;
 
 function initMap(){
   map = L.map('map').setView([29.7604, -95.3698], 13);
@@ -12,7 +13,6 @@ function initMap(){
   L.control.scale().addTo(map);
 
   // On small screens, disable map dragging/zoom to allow page scrolling
-  const isMobile = window.matchMedia('(max-width:720px)').matches;
   if (isMobile) {
     try{
       map.dragging.disable();
@@ -32,22 +32,9 @@ function initMap(){
       routeToggleBtn.style.display = 'none';
       document.body.appendChild(routeToggleBtn);
       
-      routeToggleBtn.onclick = function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        if (routeLayer) {
-          if (routeVisible) {
-            map.removeLayer(routeLayer);
-            routeToggleBtn.innerText = 'Show Route';
-            routeVisible = false;
-          } else {
-            routeLayer.addTo(map);
-            routeToggleBtn.innerText = 'Hide Route';
-            routeVisible = true;
-          }
-        }
-      };
-    }, 100);
+      // Use addEventListener for more reliable event handling
+      routeToggleBtn.addEventListener('click', toggleRouteVisibility);
+    }, 500);
   }
 
   document.getElementById('routeBtn').addEventListener('click', calculateRoute);
@@ -84,6 +71,25 @@ function initMap(){
 function setShareMessage(msg){ document.getElementById('shareMessage').textContent = msg; }
 
 function clearMessages(){ setShareMessage(''); document.getElementById('routeDetails').innerHTML=''; document.getElementById('scoreBreakdown').innerHTML=''; }
+
+function toggleRouteVisibility(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  
+  if (!routeLayer) return;
+  
+  if (routeVisible) {
+    map.removeLayer(routeLayer);
+    if (routeToggleBtn) routeToggleBtn.innerText = 'Show Route';
+    routeVisible = false;
+  } else {
+    routeLayer.addTo(map);
+    if (routeToggleBtn) routeToggleBtn.innerText = 'Hide Route';
+    routeVisible = true;
+  }
+}
 
 async function geocode(q){
   const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&limit=1';
