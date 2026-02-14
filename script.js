@@ -1,4 +1,6 @@
 let map, routeLayer, startMarker, endMarker, crimeHeat, crimeMarkers = [], crimePoints = [], lastRoute = null;
+let routeVisible = false;
+let routeToggleBtn = null;
 
 function initMap(){
   map = L.map('map').setView([29.7604, -95.3698], 13);
@@ -11,7 +13,6 @@ function initMap(){
 
   // On small screens, disable map dragging/zoom to allow page scrolling
   const isMobile = window.matchMedia('(max-width:720px)').matches;
-  let mapInteractionEnabled = false;
   if (isMobile) {
     try{
       map.dragging.disable();
@@ -20,33 +21,30 @@ function initMap(){
       map.scrollWheelZoom.disable();
     }catch(e){}
 
-    // add small enable-interaction button over map
+    // Create route toggle button
     setTimeout(() => {
-      const enableBtn = document.createElement('button');
-      enableBtn.id = 'mapEnableBtn';
-      enableBtn.innerText = 'Enable Map';
-      enableBtn.title = 'Tap to enable map interaction';
-      enableBtn.className = 'map-enable-btn';
-      enableBtn.type = 'button';
-      document.body.appendChild(enableBtn);
+      routeToggleBtn = document.createElement('button');
+      routeToggleBtn.id = 'routeToggleBtn';
+      routeToggleBtn.innerText = 'Hide Route';
+      routeToggleBtn.title = 'Toggle route visibility';
+      routeToggleBtn.className = 'map-enable-btn';
+      routeToggleBtn.type = 'button';
+      routeToggleBtn.style.display = 'none';
+      document.body.appendChild(routeToggleBtn);
       
-      enableBtn.onclick = function(e){
+      routeToggleBtn.onclick = function(e){
         e.preventDefault();
         e.stopPropagation();
-        // toggle interactions
-        mapInteractionEnabled = !mapInteractionEnabled;
-        if (mapInteractionEnabled){
-          map.dragging.enable();
-          map.touchZoom.enable();
-          map.doubleClickZoom.enable();
-          map.scrollWheelZoom.enable();
-          enableBtn.innerText = 'Disable Map';
-        } else {
-          map.dragging.disable();
-          map.touchZoom.disable();
-          map.doubleClickZoom.disable();
-          map.scrollWheelZoom.disable();
-          enableBtn.innerText = 'Enable Map';
+        if (routeLayer) {
+          if (routeVisible) {
+            map.removeLayer(routeLayer);
+            routeToggleBtn.innerText = 'Show Route';
+            routeVisible = false;
+          } else {
+            routeLayer.addTo(map);
+            routeToggleBtn.innerText = 'Hide Route';
+            routeVisible = true;
+          }
         }
       };
     }, 100);
@@ -134,7 +132,15 @@ function renderRoute(route){
   if (routeLayer) map.removeLayer(routeLayer);
   const geo = { type: 'Feature', geometry: route.geometry };
   routeLayer = L.geoJSON(geo, { style: { color: getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#2d7ef7', weight:6 } }).addTo(map);
+  routeVisible = true;
   map.fitBounds(routeLayer.getBounds(), { padding:[20,20] });
+  
+  // Show the route toggle button on mobile
+  const isMobile = window.matchMedia('(max-width:720px)').matches;
+  if (isMobile && routeToggleBtn) {
+    routeToggleBtn.style.display = 'block';
+    routeToggleBtn.innerText = 'Hide Route';
+  }
 }
 
 function computeBaseScore(route){
