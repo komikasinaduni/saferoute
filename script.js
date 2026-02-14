@@ -11,6 +11,7 @@ function initMap(){
 
   // On small screens, disable map dragging/zoom to allow page scrolling
   const isMobile = window.matchMedia('(max-width:720px)').matches;
+  let mapInteractionEnabled = false;
   if (isMobile) {
     try{
       map.dragging.disable();
@@ -26,20 +27,23 @@ function initMap(){
     enableBtn.title = 'Tap to enable map interaction';
     enableBtn.className = 'map-enable-btn';
     document.body.appendChild(enableBtn);
-    enableBtn.addEventListener('click', ()=>{
+    enableBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
       // toggle interactions
-      if (map.dragging.enabled()){
-        map.dragging.disable();
-        map.touchZoom.disable();
-        map.doubleClickZoom.disable();
-        map.scrollWheelZoom.disable();
-        enableBtn.innerText = 'Enable Map';
-      } else {
+      mapInteractionEnabled = !mapInteractionEnabled;
+      if (mapInteractionEnabled){
         map.dragging.enable();
         map.touchZoom.enable();
         map.doubleClickZoom.enable();
         map.scrollWheelZoom.enable();
         enableBtn.innerText = 'Disable Map';
+      } else {
+        map.dragging.disable();
+        map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
+        enableBtn.innerText = 'Enable Map';
       }
     });
   }
