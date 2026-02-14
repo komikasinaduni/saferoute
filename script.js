@@ -21,31 +21,35 @@ function initMap(){
     }catch(e){}
 
     // add small enable-interaction button over map
-    const enableBtn = document.createElement('button');
-    enableBtn.id = 'mapEnableBtn';
-    enableBtn.innerText = 'Enable Map';
-    enableBtn.title = 'Tap to enable map interaction';
-    enableBtn.className = 'map-enable-btn';
-    document.body.appendChild(enableBtn);
-    enableBtn.addEventListener('click', (e)=>{
-      e.preventDefault();
-      e.stopPropagation();
-      // toggle interactions
-      mapInteractionEnabled = !mapInteractionEnabled;
-      if (mapInteractionEnabled){
-        map.dragging.enable();
-        map.touchZoom.enable();
-        map.doubleClickZoom.enable();
-        map.scrollWheelZoom.enable();
-        enableBtn.innerText = 'Disable Map';
-      } else {
-        map.dragging.disable();
-        map.touchZoom.disable();
-        map.doubleClickZoom.disable();
-        map.scrollWheelZoom.disable();
-        enableBtn.innerText = 'Enable Map';
-      }
-    });
+    setTimeout(() => {
+      const enableBtn = document.createElement('button');
+      enableBtn.id = 'mapEnableBtn';
+      enableBtn.innerText = 'Enable Map';
+      enableBtn.title = 'Tap to enable map interaction';
+      enableBtn.className = 'map-enable-btn';
+      enableBtn.type = 'button';
+      document.body.appendChild(enableBtn);
+      
+      enableBtn.onclick = function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        // toggle interactions
+        mapInteractionEnabled = !mapInteractionEnabled;
+        if (mapInteractionEnabled){
+          map.dragging.enable();
+          map.touchZoom.enable();
+          map.doubleClickZoom.enable();
+          map.scrollWheelZoom.enable();
+          enableBtn.innerText = 'Disable Map';
+        } else {
+          map.dragging.disable();
+          map.touchZoom.disable();
+          map.doubleClickZoom.disable();
+          map.scrollWheelZoom.disable();
+          enableBtn.innerText = 'Enable Map';
+        }
+      };
+    }, 100);
   }
 
   document.getElementById('routeBtn').addEventListener('click', calculateRoute);
