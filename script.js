@@ -1,6 +1,6 @@
 let map, routeLayer, startMarker, endMarker, crimeHeat, crimeMarkers = [], crimePoints = [], lastRoute = null;
-let routeVisible = true;
-let routeToggleBtn = null;
+let mapInteractionEnabled = false;
+let mapToggleBtn = null;
 const isMobile = window.matchMedia('(max-width:720px)').matches;
 
 function initMap(){
@@ -21,19 +21,17 @@ function initMap(){
       map.scrollWheelZoom.disable();
     }catch(e){}
 
-    // Create route toggle button
+    // Create map interaction toggle button
     setTimeout(() => {
-      routeToggleBtn = document.createElement('button');
-      routeToggleBtn.id = 'routeToggleBtn';
-      routeToggleBtn.innerText = 'Hide Route';
-      routeToggleBtn.title = 'Toggle route visibility';
-      routeToggleBtn.className = 'map-enable-btn';
-      routeToggleBtn.type = 'button';
-      routeToggleBtn.style.display = 'none';
-      document.body.appendChild(routeToggleBtn);
+      mapToggleBtn = document.createElement('button');
+      mapToggleBtn.id = 'mapToggleBtn';
+      mapToggleBtn.innerText = 'Enable Map';
+      mapToggleBtn.title = 'Enable map dragging and interaction';
+      mapToggleBtn.className = 'map-enable-btn';
+      mapToggleBtn.type = 'button';
+      document.body.appendChild(mapToggleBtn);
       
-      // Use addEventListener for more reliable event handling
-      routeToggleBtn.addEventListener('click', toggleRouteVisibility);
+      mapToggleBtn.addEventListener('click', toggleMapInteraction);
     }, 500);
   }
 
@@ -53,7 +51,7 @@ function initMap(){
 
   const toggle = document.getElementById('controlsToggle');
   const panel = document.querySelector('.controls-panel');
-  if (toggle && panel){ toggle.addEventListener('click', ()=>{ panel.classList.toggle('open'); }); }
+  if (toggle && panel){ toggle.addEventListener('click', ()=>{ panel.classList.toggle('closed'); }); }
 
   const legend = document.getElementById('legend');
   const legendPopup = document.getElementById('legendPopup');
@@ -72,22 +70,28 @@ function setShareMessage(msg){ document.getElementById('shareMessage').textConte
 
 function clearMessages(){ setShareMessage(''); document.getElementById('routeDetails').innerHTML=''; document.getElementById('scoreBreakdown').innerHTML=''; }
 
-function toggleRouteVisibility(e) {
+function toggleMapInteraction(e) {
   if (e) {
     e.preventDefault();
     e.stopPropagation();
   }
   
-  if (!routeLayer) return;
+  if (!map) return;
   
-  if (routeVisible) {
-    map.removeLayer(routeLayer);
-    if (routeToggleBtn) routeToggleBtn.innerText = 'Show Route';
-    routeVisible = false;
+  mapInteractionEnabled = !mapInteractionEnabled;
+  
+  if (mapInteractionEnabled) {
+    map.dragging.enable();
+    map.touchZoom.enable();
+    map.doubleClickZoom.enable();
+    map.scrollWheelZoom.enable();
+    if (mapToggleBtn) mapToggleBtn.innerText = 'Disable Map';
   } else {
-    routeLayer.addTo(map);
-    if (routeToggleBtn) routeToggleBtn.innerText = 'Hide Route';
-    routeVisible = true;
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+    if (mapToggleBtn) mapToggleBtn.innerText = 'Enable Map';
   }
 }
 
@@ -138,15 +142,7 @@ function renderRoute(route){
   if (routeLayer) map.removeLayer(routeLayer);
   const geo = { type: 'Feature', geometry: route.geometry };
   routeLayer = L.geoJSON(geo, { style: { color: getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#2d7ef7', weight:6 } }).addTo(map);
-  routeVisible = true;
   map.fitBounds(routeLayer.getBounds(), { padding:[20,20] });
-  
-  // Show the route toggle button on mobile
-  const isMobile = window.matchMedia('(max-width:720px)').matches;
-  if (isMobile && routeToggleBtn) {
-    routeToggleBtn.style.display = 'block';
-    routeToggleBtn.innerText = 'Hide Route';
-  }
 }
 
 function computeBaseScore(route){
