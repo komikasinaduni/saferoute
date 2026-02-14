@@ -1,0 +1,10 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "type": "assault", "date": "2026-01-12" }, "geometry": { "type": "Point", "coordinates": [ -95.3695, 29.7608 ] } },
+    { "type": "Feature", "properties": { "type": "theft", "date": "2026-02-01" }, "geometry": { "type": "Point", "coordinates": [ -95.3678, 29.7592 ] } },
+    { "type": "Feature", "properties": { "type": "robbery", "date": "2026-01-30" }, "geometry": { "type": "Point", "coordinates": [ -95.3659, 29.7620 ] } },
+    { "type": "Feature", "properties": { "type": "burglary", "date": "2026-01-05" }, "geometry": { "type": "Point", "coordinates": [ -95.3720, 29.7580 ] } },
+    { "type": "Feature", "properties": { "type": "other", "date": "2026-02-05" }, "geometry": { "type": "Point", "coordinates": [ -95.3710, 29.7630 ] } }
+  ]
+}

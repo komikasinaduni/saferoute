@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>SafeRoute - Hack For Her</title>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<div class="app">
+		<header class="header">
+			<h1>SafeRoute</h1>
+			<p class="tag">Here, you can find the safest route and walking directions for it!</p>
+		</header>
+
+		<section class="controls">
+			<button class="controls-toggle" id="controlsToggle" aria-label="Toggle controls">☰</button>
+			<div class="controls-panel">
+			<div class="section-header">Find a Route</div>
+			<div class="inputs">
+				<label>Start Location</label>
+				<input id="start" type="text" placeholder="e.g. Rice University, Texas Street" autocomplete="off" />
+				<label>Destination</label>
+				<input id="end" type="text" placeholder="e.g. Hermann Park, Main Street" autocomplete="off" />
+			</div>
+			<div class="buttons">
+				<button id="routeBtn">Find Safer Route</button>
+				<button id="shareBtn">Share My Walk</button>
+			</div>
+
+			<div class="section-header">Crime Data (Optional)</div>
+			<div class="crimeControls">
+				<label><input id="toggleCrime" type="checkbox" checked /> Show crime incidents on map</label>
+				<input id="crimeUrl" type="text" placeholder="Or paste a map data URL from any source" />
+				<button id="loadCrimeBtn">Load Custom Data</button>
+				<div class="houstonControls">
+					<label>Load Houston's Official Data</label>
+					<input id="houstonDataset" type="text" placeholder="Paste the Houston dataset code (find on data.houstontx.gov)" />
+					<input id="houstonToken" type="text" placeholder="(optional) Access token for higher limits" />
+					<button id="loadHoustonBtn">Load Houston Data</button>
+				</div>
+			</div>
+
+			<div id="safetyScore" class="score">Safety Score: —</div>
+			<div id="scoreBreakdown" class="details"></div>
+			<div id="routeDetails" class="details"></div>
+			<div id="shareMessage" class="shareMsg" aria-live="polite"></div>
+
+			<div id="legend" class="legend">
+				<strong>Legend</strong>
+				<div><span class="legend-swatch good"></span> Low Risk</div>
+				<div><span class="legend-swatch warn"></span> Medium Risk</div>
+				<div><span class="legend-swatch bad"></span> High Risk</div>
+				<div><span class="legend-swatch crime"></span> Crime (sample)</div>
+			</div>
+
+			<div id="legendPopup" class="legend-popup hidden">
+				<button id="closeLegend" class="closeBtn">×</button>
+				<h3>Map Legend</h3>
+				<ul>
+					<li><span class="legend-swatch good"></span> Low Risk (8–10)</li>
+					<li><span class="legend-swatch warn"></span> Medium Risk (5–7)</li>
+					<li><span class="legend-swatch bad"></span> High Risk (&lt;5)</li>
+					<li><span class="legend-swatch crime"></span> Crime incident (heatmap / marker)</li>
+				</ul>
+			</div>
+			</div>
+		</section>
+
+		<div id="map"></div>
+
+		<div id="loader" class="loader hidden">Calculating route…</div>
+	</div>
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+	<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
+	<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+	<script src="script.js"></script>
+</body>
+</html>
+
+
